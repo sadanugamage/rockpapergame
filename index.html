@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Rock Paper Scissors - 2 Players</title>
+  <style>
+    body {
+      font-family: sans-serif;
+      background: #1e1e2f;
+      color: white;
+      text-align: center;
+      padding: 40px;
+    }
+    h2 {
+      margin-bottom: 10px;
+    }
+    .scoreboard {
+      margin-bottom: 30px;
+      font-size: 18px;
+    }
+    .choices {
+      display: flex;
+      justify-content: center;
+      gap: 60px;
+      margin-bottom: 20px;
+    }
+    .player {
+      flex: 1;
+    }
+    .player p {
+      margin-bottom: 10px;
+      font-weight: bold;
+    }
+    .emoji-btn {
+      font-size: 40px;
+      background: none;
+      border: 3px solid transparent;
+      border-radius: 10px;
+      cursor: pointer;
+      padding: 10px;
+      margin: 5px;
+      transition: border 0.3s;
+    }
+    .emoji-btn.selected {
+      border-color: #61dafb;
+      background: #333;
+    }
+    button.action {
+      padding: 10px 25px;
+      font-size: 16px;
+      background: #61dafb;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+      color: #1e1e2f;
+      margin: 10px;
+    }
+    #result {
+      margin-top: 30px;
+      font-size: 22px;
+      font-weight: bold;
+    }
+  </style>
+</head>
+<body>
+
+  <h2>Rock Paper Scissors - 2 Players</h2>
+
+  <div class="scoreboard">
+    <span>Player 1 Score: <strong id="score1">0</strong></span> |
+    <span>Player 2 Score: <strong id="score2">0</strong></span>
+  </div>
+
+  <div class="choices">
+    <div class="player" id="player1">
+      <p>Player 1</p>
+      <button class="emoji-btn" data-choice="rock">🪨</button>
+      <button class="emoji-btn" data-choice="paper">✋</button>
+      <button class="emoji-btn" data-choice="scissors">✂️</button>
+    </div>
+    <div class="player" id="player2">
+      <p>Player 2</p>
+      <button class="emoji-btn" data-choice="rock">🪨</button>
+      <button class="emoji-btn" data-choice="paper">✋</button>
+      <button class="emoji-btn" data-choice="scissors">✂️</button>
+    </div>
+  </div>
+
+  <button class="action" onclick="play()">Play</button>
+  <button class="action" onclick="reset()">Refresh</button>
+
+  <div id="result"></div>
+
+  <!-- Sound Placeholder -->
+ <audio id="sound" src="sound effect.mp3" preload="auto"></audio>
+
+  <script>
+    let p1 = null, p2 = null;
+    let score1 = 0, score2 = 0;
+
+    document.querySelectorAll('#player1 .emoji-btn').forEach(btn => {
+      btn.onclick = () => {
+        p1 = btn.dataset.choice;
+        selectOne('#player1', btn);
+      };
+    });
+
+    document.querySelectorAll('#player2 .emoji-btn').forEach(btn => {
+      btn.onclick = () => {
+        p2 = btn.dataset.choice;
+        selectOne('#player2', btn);
+      };
+    });
+
+    function selectOne(playerId, selected) {
+      document.querySelectorAll(`${playerId} .emoji-btn`).forEach(b => b.classList.remove('selected'));
+      selected.classList.add('selected');
+    }
+
+    function play() {
+      if (!p1 || !p2) return alert('Both players must select!');
+
+      // Play sound
+      const sound = document.getElementById('sound');
+      sound.currentTime = 0;
+      sound.play();
+
+      if (p1 === p2) return show("It's a tie!");
+      if (
+        (p1 === 'rock' && p2 === 'scissors') ||
+        (p1 === 'paper' && p2 === 'rock') ||
+        (p1 === 'scissors' && p2 === 'paper')
+      ) {
+        score1++;
+        updateScores();
+        show('Player 1 wins!');
+      } else {
+        score2++;
+        updateScores();
+        show('Player 2 wins!');
+      }
+    }
+
+    function updateScores() {
+      document.getElementById('score1').textContent = score1;
+      document.getElementById('score2').textContent = score2;
+    }
+
+    function show(text) {
+      document.getElementById('result').textContent = text;
+    }
+
+    function reset() {
+      p1 = p2 = null;
+      document.getElementById('result').textContent = '';
+      document.querySelectorAll('.emoji-btn').forEach(btn => btn.classList.remove('selected'));
+    }
+  </script>
+
+</body>
+</html>
+
+
